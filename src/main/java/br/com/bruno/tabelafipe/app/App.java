@@ -70,5 +70,8 @@ public class App {
         System.out.println("\nTodos: ");
         veiculos.getTodos();
 
+        System.out.println("\nPrincipais estatísticas: ");
+        veiculos.getSummaryStatistics();
+
     }
 }

@@ -5,10 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -18,6 +15,7 @@ import java.util.stream.Collectors;
 public class ListaDeVeiculos {
 
     private List<Veiculo> listaDeVeiculos = new ArrayList<>();
+    Integer limitSize = 5;
 
     public void addVeiculo (Veiculo veiculo) {
         this.listaDeVeiculos.add(veiculo);
@@ -27,7 +25,7 @@ public class ListaDeVeiculos {
 
         this.listaDeVeiculos.stream()
                 .sorted(Comparator.comparing(Veiculo::getValor))
-                .limit(10)
+                .limit(limitSize)
                 .forEach(System.out::println);
     }
 
@@ -35,7 +33,7 @@ public class ListaDeVeiculos {
 
         this.listaDeVeiculos.stream()
                 .sorted(Comparator.comparing(Veiculo::getValor).reversed())
-                .limit(10)
+                .limit(limitSize)
                 .forEach(System.out::println);
     }
 
@@ -44,7 +42,7 @@ public class ListaDeVeiculos {
         this.listaDeVeiculos.stream()
                 .filter(veiculo -> veiculo.getAno() < 2100)
                 .sorted(Comparator.comparing(Veiculo::getAno))
-                .limit(10)
+                .limit(limitSize)
                 .forEach(System.out::println);
     }
 
@@ -53,23 +51,32 @@ public class ListaDeVeiculos {
         this.listaDeVeiculos.stream()
                 .filter(veiculo -> veiculo.getAno() < 2100)
                 .sorted(Comparator.comparing(Veiculo::getAno).reversed())
-                .limit(10)
+                .limit(limitSize)
                 .forEach(System.out::println);
     }
 
     public void getMaisBaratosPorAno() {
 
-        Map<Integer, List<Veiculo>> mapMaisBaratosPorAno = this.listaDeVeiculos.stream()
-                .collect(Collectors.groupingBy(Veiculo::getAno, Collectors.collectingAndThen(
-                        Collectors.toList(),
-                        lista -> lista.stream()
-                                .sorted(Comparator.comparing(Veiculo::getValor))
-                                .limit(3)
-                                .toList())));
+        Map<Integer, Veiculo> mapMaisBaratosPorAno = this.listaDeVeiculos.stream()
+                .collect(Collectors.groupingBy(
+                        Veiculo::getAno,
+                        Collectors.collectingAndThen(
+                                Collectors.minBy(Comparator.comparing(Veiculo::getValor)), Optional::get)));
 
-        mapMaisBaratosPorAno.forEach( (a, b) -> {
-            System.out.println(a + " --> " + b);
+        mapMaisBaratosPorAno.forEach((ano, info) -> {
+            System.out.println(ano + " --> " + info);
         });
+    }
+
+    public void getSummaryStatistics () {
+        DoubleSummaryStatistics estatisticas = this.listaDeVeiculos.stream()
+                .mapToDouble(value -> value.getValor().doubleValue())
+                .summaryStatistics();
+
+        System.out.println("Quantidade total de modelos analisados: " + estatisticas.getCount());
+        System.out.println("Média de preços: R$" + estatisticas.getAverage());
+        System.out.println("O mais caro: R$" + estatisticas.getMax());
+        System.out.println("O mais barato: R$" + estatisticas.getMin());
     }
 
     public void getTodos() {
