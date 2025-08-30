@@ -18,6 +18,8 @@ public class TabelafipeApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		app.startApp("Chevrolet", "Cruze");
+		app.startApp("Peugeot", "Hoggar");
+		app.startApp("Hyundai", "Veloster");
+		app.getEstatisticasDb();
 	}
 }

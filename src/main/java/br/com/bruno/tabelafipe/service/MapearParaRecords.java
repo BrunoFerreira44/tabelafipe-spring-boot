@@ -27,6 +27,8 @@ public class MapearParaRecords implements IMapearParaRecords {
 
     @Override
     public <T> List<T> mapearListaParaRecords(String json, Class<T> classe) {
+
+//        System.out.println("MEU JSON É ESTE: " + json);
         CollectionType lista = mapper.getTypeFactory().constructCollectionType(List.class, classe);
 
         try {
